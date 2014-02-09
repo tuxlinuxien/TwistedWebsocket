@@ -21,6 +21,10 @@ epoll.register(SERVER, select.EPOLLIN)
 
 clients , bufferIn, bufferOut, requests, responses = {}, {}, {}, [], []
 
+
+class ClientConnectionError(Exception): pass
+class FrameError(Exception): pass
+
 class Frame:
 
   def __init__(self, buf):
@@ -37,7 +41,7 @@ class Frame:
   def _frameHeader(self):
     buf = self.buf
     if len(buf) < 2:
-      raise Exception("Incomple Frame: HEADER DATA")
+      raise FrameError("Incomple Frame: HEADER DATA")
     self.fin = ord(buf[0]) >> 7
     self.opcode = ord(buf[0]) & 0b1111
     self.payload = ord(buf[1]) & 0b1111111
@@ -46,27 +50,27 @@ class Frame:
       self.len = self.payload
       self.frame_length = 6 + self.len
       if self.frame_length > len(self.buf):
-        raise Exception("Incomple Frame: FRAME DATA")
+        raise FrameError("Incomple Frame: FRAME DATA")
 
       if len(buf) < 4:
-        raise Exception("Incomple Frame: KEY DATA")
+        raise FrameError("Incomple Frame: KEY DATA")
       self.key = buf[:4]
       buf = buf[4:4+len(buf)+1]
 
     elif self.payload == 126:
       if len(buf) < 6:
-        raise Exception("Incomple Frame: KEY DATA")
+        raise FrameError("Incomple Frame: KEY DATA")
       self.len = (ord(buf[0]) * 1 << 8)
       self.len += ord(buf[1])
       self.frame_length = 8 + self.len
       if self.frame_length > len(self.buf):
-        raise Exception("Incomple Frame: FRAME DATA")
+        raise FrameError("Incomple Frame: FRAME DATA")
       buf = buf[2:]
       self.key = buf[:4]
       buf = buf[4:4+len(buf)+1]
 
     else:
-      raise Exception("Inplement payload = 127")
+      raise FrameError("Inplement payload = 127")
     self.msg = buf
 
 
@@ -102,9 +106,7 @@ class Client:
   def recv(self, read_len=1024):
     buf = self.sock.recv(read_len)
     if len(buf) == 0:
-      Client._poll.unregister(self.sock)
-      del clients[self.sock.fileno()]
-      raise Exception("Client disconnected.")
+      raise ClientConnectionError("Client disconnected.")
       return ""
     self.bufferIn += buf
     return self.bufferIn
@@ -114,23 +116,21 @@ class Client:
       self.bufferOut += cmd
       Client._poll.modify(self.sock, select.EPOLLIN | select.EPOLLOUT)
     except Exception, e:
-      print e
-      Client._poll.unregister(self.sock)
-      del clients[self.sock.fileno()]
+      raise ClientConnectionError("Epoll error")
+      
 
   def consume(self):
     try:
       ret = self.sock.send(self.bufferOut)
+      print "sent data len",ret
       if ret < 0:
-        raise Exception("Disconnected")
+        raise ClientConnectionError("Disconnected")
       self.bufferOut = self.bufferOut[ret:]
       if len(self.bufferOut) == 0:
         Client._poll.modify(self.sock, select.EPOLLIN)
     except Exception, e:
       print e
-      Client._poll.unregister(self.sock)
-      del clients[self.sock.fileno()]
-
+      
 
   def initHandcheck(self):
     buf = self.recv()
@@ -152,7 +152,6 @@ class Client:
     if self.handshake == False:
       self.initHandcheck()
       return
-    
     try:
       buf = self.recv()
       f = Frame(buf)
@@ -160,9 +159,8 @@ class Client:
       print "msg =", msg
       f_len = f.getFrameLenght()
       self.bufferIn = buf[f_len:]
-    except Exception, e:
+    except FrameError, e:
       print str(e)
-
 
 
 def registerClient():
@@ -173,13 +171,20 @@ while True:
   events = epoll.poll()
   for fileno, event in events:
 
-    if event & select.EPOLLIN:
-      if fileno == SERVER.fileno():
-        registerClient()
-      else:
-        clients[fileno].onReceive()
-    if event & select.EPOLLOUT:
-      clients[fileno].consume()
-    if event == select.EPOLLHUP:
-      print "diconnect"
-      pass
+    try:
+      if event & select.EPOLLIN:
+        if fileno == SERVER.fileno():
+          registerClient()
+        else:
+          clients[fileno].onReceive()
+      if event & select.EPOLLOUT:
+        clients[fileno].consume()
+      if event == select.EPOLLHUP:
+        print "diconnect"
+        pass
+    except (Exception, ClientConnectionError), e:
+      print "last loop",e
+      c = clients[fileno]
+      Client._poll.unregister(c.sock)
+      del clients[fileno]
+
