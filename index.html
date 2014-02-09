@@ -1,17 +1,30 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><h1>test</h1><input type="text" id="msg"><button class="toto">300</button><button class="titi">500</button><button class="tutu">2000</button><script type="text/javascript">
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><style type="text/css">.responses {
+  height: 500px;
+  width: 100%;
+  border: 1px solid #808080;
+  overflow-y: auto;
+  vertical-align: bottom;
+}
+.responses .response {
+  margin: 10px;
+  border: 1px solid #f00;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: 10px;
+}
+</style><h1>test</h1><div class="responses"></div><input type="text" id="msg"><button class="toto">Send</button><script type="text/javascript">
 (function() {
   var q, ws,
     _this = this;
 
   ws = new WebSocket('ws://127.0.0.1:9999/');
 
-  ws.onopen = function() {
-    ws.send("113");
-    return ws.send("114");
-  };
+  ws.onopen = function() {};
 
   ws.onmessage = function(e) {
-    return console.log(e);
+    var msg;
+    msg = e.data;
+    return console.log(document.querySelector('.responses').innerHTML += "<div class='response'>" + msg + "</div>");
   };
 
   ws.onclose = function() {
@@ -21,43 +34,10 @@
   q = document.querySelector('button.toto');
 
   q.onclick = function() {
-    var buf, cpt, msg;
-    msg = "0123456789";
-    cpt = 0;
-    buf = "";
-    while (cpt < 30) {
-      buf += msg;
-      cpt++;
-    }
-    return ws.send(buf);
-  };
-
-  q = document.querySelector('button.titi');
-
-  q.onclick = function() {
-    var buf, cpt, msg;
-    msg = "0123456789";
-    cpt = 0;
-    buf = "";
-    while (cpt < 50) {
-      buf += msg;
-      cpt++;
-    }
-    return ws.send(buf);
-  };
-
-  q = document.querySelector('button.tutu');
-
-  q.onclick = function() {
-    var buf, cpt, msg;
-    msg = "0123456789";
-    cpt = 0;
-    buf = "";
-    while (cpt < 200) {
-      buf += msg;
-      cpt++;
-    }
-    return ws.send(buf);
+    var msg;
+    msg = document.querySelector('input').value;
+    ws.send(msg);
+    return document.querySelector('input').value = "";
   };
 
 }).call(this);

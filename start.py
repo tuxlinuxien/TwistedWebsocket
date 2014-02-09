@@ -19,7 +19,7 @@ SERVER.listen(10)
 epoll = select.epoll()
 epoll.register(SERVER, select.EPOLLIN)
 
-clients , bufferIn, bufferOut, requests, responses = {}, {}, {}, [], []
+clients = {}
 
 
 class ClientConnectionError(Exception): pass
@@ -86,6 +86,38 @@ class Frame:
   def getFrameLenght(self):
     return self.frame_length
 
+  @staticmethod
+  def buildMsg(buf):
+    c_buf = buf
+    msg = ""
+    #first byte
+    o = (1 << 7) + 1
+    msg += str(chr(o))
+    #second byte
+    buf_len = len(buf)
+    if buf_len < 126:
+      o = buf_len
+      msg += str(chr(o))
+      msg += buf
+      return msg
+
+    if buf_len <= ((1 << 16) - 1):
+      msg += str(chr(126))
+      for i in range(1,3):
+        o = (buf_len >> (16 - (8*i))) & (2**8 - 1)
+        msg += str(chr(o))
+      msg += buf
+      return msg
+
+    if buf_len <= ((1 << 64) - 1):
+      msg += str(chr(127))
+      for i in range(1,9):
+        o = (buf_len >> (64 - (8*i))) & (2**8 - 1)
+        msg += str(chr(o)) + extra_len
+      msg += buf
+      return msg
+    
+
 class Client:
 
   _poll = epoll
@@ -122,7 +154,6 @@ class Client:
   def consume(self):
     try:
       ret = self.sock.send(self.bufferOut)
-      print "sent data len",ret
       if ret < 0:
         raise ClientConnectionError("Disconnected")
       self.bufferOut = self.bufferOut[ret:]
@@ -156,12 +187,12 @@ class Client:
       buf = self.recv()
       f = Frame(buf)
       msg = f.getMsg()
-      print "msg =", msg
       f_len = f.getFrameLenght()
       self.bufferIn = buf[f_len:]
+      for fileno, c in clients.items():
+        c.send(Frame.buildMsg(msg))
     except FrameError, e:
       print str(e)
-
 
 def registerClient():
   new_client , addr = SERVER.accept()
@@ -182,9 +213,21 @@ while True:
       if event == select.EPOLLHUP:
         print "diconnect"
         pass
-    except (Exception, ClientConnectionError), e:
-      print "last loop",e
+
+    except ClientConnectionError, e:
       c = clients[fileno]
       Client._poll.unregister(c.sock)
+      try:
+        c.sock.close()
+      except:
+        pass
+      del clients[fileno]
+    except Exception, e:
+      c = clients[fileno]
+      Client._poll.unregister(c.sock)
+      try:
+        c.sock.close()
+      except:
+        pass
       del clients[fileno]
 

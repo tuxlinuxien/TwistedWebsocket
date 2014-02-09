@@ -3,47 +3,36 @@ html
   head
     meta(charset="utf-8")
   body
+    :stylus
+      .responses
+        height 500px
+        width 100%
+        border 1px solid grey
+        overflow-y auto
+        vertical-align bottom
+
+        .response
+          margin 10px
+          border 1px solid red
+          box-sizing border-box
+          -webkit-box-sizing border-box
+          padding 10px
+
     h1 test
+    .responses
     input(type="text", id="msg")
-    button.toto 300
-    button.titi 500
-    button.tutu 2000
+    button.toto Send
     :coffeescript
       ws = new WebSocket('ws://127.0.0.1:9999/')
       ws.onopen = ()=>
-        ws.send("113");
-        ws.send("114");
       ws.onmessage = (e)-> 
-        console.log e
+        msg = e.data
+        console.log document.querySelector('.responses').innerHTML += "<div class='response'>#{msg}</div>"
       ws.onclose = ()=>
         ws.send("disconnected");
 
       q = document.querySelector('button.toto')
       q.onclick = ()=>
-        msg = "0123456789"
-        cpt = 0
-        buf = ""
-        while cpt < 30
-          buf += msg
-          cpt++
-        ws.send(buf)
-
-      q = document.querySelector('button.titi')
-      q.onclick = ()=>
-        msg = "0123456789"
-        cpt = 0
-        buf = ""
-        while cpt < 50
-          buf += msg
-          cpt++
-        ws.send(buf)
-
-      q = document.querySelector('button.tutu')
-      q.onclick = ()=>
-        msg = "0123456789"
-        cpt = 0
-        buf = ""
-        while cpt < 200
-          buf += msg
-          cpt++
-        ws.send(buf)
+        msg = document.querySelector('input').value
+        ws.send(msg)
+        document.querySelector('input').value = ""
