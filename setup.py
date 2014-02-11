@@ -9,7 +9,7 @@ setup(
     version = "0.0.2",
     author = "Yoann Cerda",
     author_email = "tuxlinuxien@gmail.com",
-    description = (""),
+    description = ("Websocket protocol implementation based on Twisted"),
     license = "BSD",
     keywords = "websocket server twisted",
     url = "https://github.com/tuxlinuxien/TwistedWebsocket",
