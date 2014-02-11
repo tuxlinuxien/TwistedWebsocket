@@ -1,6 +1,6 @@
 # TwistedWebsocket
 
-Event-based websocket server based on Twisted
+Websocket protocol implementation based on Twisted
 
 /!\ Partial implementation of the [RFC 6455](https://www.rfc-editor.org/rfc/rfc6455.txt) /!\
 
