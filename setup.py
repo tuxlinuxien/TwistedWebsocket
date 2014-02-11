@@ -13,7 +13,7 @@ setup(
     license = "BSD",
     keywords = "websocket server",
     url = "https://github.com/tuxlinuxien/TwistedWebsocket",
-    packages=['TwistedWebsocket.py'],
+    packages=['TwistedWebsocket'],
     install_requires = ['twisted'],
     long_description=read('README.md'),
 )
