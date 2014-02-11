@@ -185,9 +185,9 @@ class Protocol(BaseProtocol, object):
     pass
 
   def sendMessage(self, msg):
+    self.commands.append(msg)
     if not self.websocket_ready:
       return
-    self.commands.append(msg)
     for cmd in self.commands:
       self.transport.write(Frame.buildMsg(cmd))
     self.commands = []
