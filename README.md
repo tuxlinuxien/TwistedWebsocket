@@ -11,7 +11,7 @@ Event-based websocket server based on Twisted
 
 ## Installation
 
-  $ pip install https://github.com/tuxlinuxien/TwistedWebsocket/archive/master.zip
+  $ pip install TwistedWebsocket
 
 ## API
   - `TwistedWebsocket.Protocol.onConnect()`: Callback when the client is connected
