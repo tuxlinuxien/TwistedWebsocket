@@ -1,4 +1,4 @@
-#async-websocket
+# TwistedWebsocket
 
 Event-based websocket server based on Twisted
 
