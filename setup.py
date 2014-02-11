@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "TwistedWebsoket",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Yoann Cerda",
     author_email = "tuxlinuxien@gmail.com",
     description = (""),
@@ -16,4 +16,8 @@ setup(
     packages=['TwistedWebsocket'],
     install_requires = ['twisted'],
     long_description=read('README.md'),
+    classifiers=[
+        "Development Status :: 2 - Pre-Alpha",
+        "Environment :: Console",
+    ],
 )
