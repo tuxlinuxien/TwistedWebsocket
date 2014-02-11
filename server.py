@@ -1,6 +1,6 @@
 from twisted.internet.protocol import Factory
 from twisted.internet import reactor
-import TwistedWebsocket
+from TwistedWebsocket import TwistedWebsocket
 
 
 class ClientWebSocket(TwistedWebsocket.Protocol):

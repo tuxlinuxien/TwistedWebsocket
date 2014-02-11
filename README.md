@@ -4,16 +4,14 @@ Event-based websocket server based on Twisted
 
 /!\ Partial implementation of the [RFC 6455](https://www.rfc-editor.org/rfc/rfc6455.txt) /!\
 
-## Requirement
+## Requirements
 
   * Python 2.7+
   * [Twisted](https://twistedmatrix.com/trac/)
 
-## How to use
+## Installation
 
-  $ python server.py
-
-  Will run the websocket server on port 9999
+  $ pip install https://github.com/tuxlinuxien/TwistedWebsocket/archive/master.zip
 
 ## API
   - `TwistedWebsocket.Protocol.onConnect()`: Callback when the client is connected
@@ -29,7 +27,8 @@ Event-based websocket server based on Twisted
 
   from twisted.internet.protocol import Factory
   from twisted.internet import reactor
-  import TwistedWebsocket
+  from TwistedWebsocket import TwistedWebsocket
+
 
   class ClientWebSocket(TwistedWebsocket.Protocol):
 
@@ -57,5 +56,6 @@ Event-based websocket server based on Twisted
 
   reactor.listenTCP(9999, WebSocketFactory())
   reactor.run()
+
 
 ```
