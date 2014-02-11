@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "TwistedWebsocket",
-    version = "0.0.3",
+    version = "0.0.4",
     author = "Yoann Cerda",
     author_email = "tuxlinuxien@gmail.com",
     description = ("Websocket protocol implementation based on Twisted"),

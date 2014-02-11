@@ -14,12 +14,12 @@ Websocket protocol implementation based on Twisted
   $ pip install TwistedWebsocket
 
 ## API
-  - `TwistedWebsocket.Protocol.onConnect()`: Callback when the client is connected
-  - `TwistedWebsocket.Protocol.onDisconnect()`: Callback when the client is disconnected
-  - `TwistedWebsocket.Protocol.onMessage(msg)`: Callback when the client receive a message 
-  - `TwistedWebsocket.Protocol.sendMessage(msg)`: Send a message to the client
-  - `TwistedWebsocket.Protocol.users`: Dictionnary ( self == self.clients[self.id] ) off all the clients connected to the server
-  - `TwistedWebsocket.Protocol.id`: Client UUID4 id
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.onConnect()`: Callback when the client is connected
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.onDisconnect()`: Callback when the client is disconnected
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.onMessage(msg)`: Callback when the client receive a message 
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.sendMessage(msg)`: Send a message to the client
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.users`: Dictionnary ( self == self.clients[self.id] ) off all the clients connected to the server
+  - `TwistedWebsocket.TwistedWebsocket.Protocol.id`: Client UUID4 id
 
 ## Default Implementation
 
