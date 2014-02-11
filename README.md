@@ -5,7 +5,7 @@ Event-based websocket server based on Twisted
 ## Requirement
 
   * Python 2.7+
-  * [Twisted](https://twistedmatrix.com/trac/):
+  * [Twisted](https://twistedmatrix.com/trac/)
 
 ## How to use
 
@@ -14,12 +14,12 @@ Event-based websocket server based on Twisted
   Will run the websocket server on port 9999
 
 ## API
-  - `websocket.Protocol.onConnect()`: Callback when the client is connected
-  - `websocket.Protocol.onDisconnect()`: Callback when the client is disconnected
-  - `websocket.Protocol.onMessage(msg)`: Callback when the client receive a message 
-  - `websocket.Protocol.sendMessage(msg)`: Send a message to the client
-  - `websocket.Protocol.users`: Dictionnary (self = self.clients[self.id]) off all the clients connected to the server
-  - `websocket.Protocol.id`: Client UUID4 id
+  - `TwistedWebsocket.Protocol.onConnect()`: Callback when the client is connected
+  - `TwistedWebsocket.Protocol.onDisconnect()`: Callback when the client is disconnected
+  - `TwistedWebsocket.Protocol.onMessage(msg)`: Callback when the client receive a message 
+  - `TwistedWebsocket.Protocol.sendMessage(msg)`: Send a message to the client
+  - `TwistedWebsocket.Protocol.users`: Dictionnary (self = self.clients[self.id]) off all the clients connected to the server
+  - `TwistedWebsocket.Protocol.id`: Client UUID4 id
 
 ## Default Implementation
 
@@ -27,9 +27,9 @@ Event-based websocket server based on Twisted
 
   from twisted.internet.protocol import Factory
   from twisted.internet import reactor
-  import websocket
+  import TwistedWebsocket
 
-  class ClientWebSocket(websocket.Protocol):
+  class ClientWebSocket(TwistedWebsocket.Protocol):
 
     def onConnect(self):
       for k, c in self.users.items():

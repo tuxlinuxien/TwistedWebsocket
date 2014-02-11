@@ -11,7 +11,7 @@ Connection: Upgrade\r\n\
 Sec-WebSocket-Accept: %s\r\n\r\n\
 '
 
-class WebSocketError(Exception): pass
+class TwistedWebsocketError(Exception): pass
 class FrameError(Exception): pass
 
 class Frame(object):

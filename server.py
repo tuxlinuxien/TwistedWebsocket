@@ -1,9 +1,9 @@
 from twisted.internet.protocol import Factory
 from twisted.internet import reactor
-import websocket
+import TwistedWebsocket
 
 
-class ClientWebSocket(websocket.Protocol):
+class ClientWebSocket(TwistedWebsocket.Protocol):
 
   def onConnect(self):
     for k, c in self.users.items():
