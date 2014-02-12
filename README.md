@@ -30,7 +30,6 @@ Default Implementation
 
 Broadcast server example:
 
-::
 
     from twisted.internet.protocol import Factory
     from twisted.internet import reactor
