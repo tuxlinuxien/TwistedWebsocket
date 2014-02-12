@@ -64,3 +64,4 @@ Websocket server protocol implementation based on Twisted
 ## TODO
 
   - Client protocol implementation
+  - Improve frame building
