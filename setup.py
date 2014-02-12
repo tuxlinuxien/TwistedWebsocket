@@ -19,5 +19,8 @@ setup(
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",
+        "Framework :: Twisted",
+        "Intended Audience :: Developers",
+        "License :: MIT License",
     ],
 )
