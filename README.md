@@ -12,9 +12,8 @@ Requirements
 Installation
 ------------
 
-::
 
-  pip install TwistedWebsocket
+    pip install TwistedWebsocket
 
 API
 ---
