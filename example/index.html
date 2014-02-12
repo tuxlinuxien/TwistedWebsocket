@@ -12,9 +12,9 @@
   -webkit-box-sizing: border-box;
   padding: 10px;
 }
-</style><h1>test</h1><div class="responses"></div><input type="text" id="msg"><button class="toto">Send</button><button class="titi">2000</button><script type="text/javascript">
+</style><h1>test</h1><div class="responses"></div><input type="text" id="msg"><button class="toto">Send</button><script type="text/javascript">
 (function() {
-  var q, q1, ws,
+  var q, ws,
     _this = this;
 
   ws = new WebSocket('ws://127.0.0.1:9999/');
@@ -38,20 +38,6 @@
     msg = document.querySelector('input').value;
     ws.send(msg);
     return document.querySelector('input').value = "";
-  };
-
-  q1 = document.querySelector('button.titi');
-
-  q1.onclick = function() {
-    var buf, cpt, msg;
-    msg = "1234567890";
-    cpt = 0;
-    buf = "";
-    while (cpt < 10000) {
-      buf += msg;
-      cpt++;
-    }
-    return ws.send(buf);
   };
 
 }).call(this);

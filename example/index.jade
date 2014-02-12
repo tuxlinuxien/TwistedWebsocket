@@ -22,7 +22,6 @@ html
     .responses
     input(type="text", id="msg")
     button.toto Send
-    button.titi 2000
     :coffeescript
       ws = new WebSocket('ws://127.0.0.1:9999/')
       ws.onopen = ()=>
@@ -37,13 +36,3 @@ html
         msg = document.querySelector('input').value
         ws.send(msg)
         document.querySelector('input').value = ""
-
-      q1 = document.querySelector('button.titi')
-      q1.onclick = ()=>
-        msg = "1234567890"
-        cpt = 0
-        buf = ""
-        while cpt < 10000
-          buf += msg
-          cpt++
-        ws.send(buf)

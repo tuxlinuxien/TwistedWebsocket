@@ -1,17 +1,17 @@
 from twisted.internet.protocol import Factory
 from twisted.internet import reactor
-from TwistedWebsocket import TwistedWebsocket
+from TwistedWebsocket.server import Protocol
 
 
-class ClientWebSocket(TwistedWebsocket.Protocol):
+class WebSocketHandler(Protocol):
 
   def onConnect(self):
-    for k, c in self.users.items():
-      c.sendMessage("%s connected" % self.id)
+    for _id, user in self.users.items():
+      user.sendMessage("%s connected" % self.id)
 
   def onDisconnect(self):
-    for k, c in self.users.items():
-      c.sendMessage("%s disconnected" % self.id)
+    for _id, user in self.users.items():
+      user.sendMessage("%s disconnected" % self.id)
 
   def onMessage(self, msg):
     for _id, user in  self.users.items():
@@ -24,7 +24,7 @@ class WebSocketFactory(Factory):
     self.users = {}
   
   def buildProtocol(self, addr):
-    return ClientWebSocket(self.users)
+    return WebSocketHandler(self.users)
 
 
 reactor.listenTCP(9999, WebSocketFactory())
