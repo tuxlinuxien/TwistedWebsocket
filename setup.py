@@ -37,7 +37,6 @@ setup(
       "Environment :: Console",
       "Framework :: Twisted",
       "Intended Audience :: Developers",
-      "License :: MIT License",
     ],
   cmdclass = {'test': TestCommand},
 )
