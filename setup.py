@@ -16,7 +16,7 @@ class TestCommand(Command):
 
   def run(self):
     import sys, subprocess
-    raise SystemExit(subprocess.call([sys.executable,'-m','unittest']))
+    raise SystemExit(subprocess.call([sys.executable,'-m','unittest','tests.test_frame']))
 
 setup(
   name = "TwistedWebsocket",
