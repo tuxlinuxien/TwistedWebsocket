@@ -16,6 +16,14 @@ Installation
     
     pip install TwistedWebsocket
 
+Testing
+-------
+
+::
+    
+    python setup.py test
+    
+
 API
 ---
 
