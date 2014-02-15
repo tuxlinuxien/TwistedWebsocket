@@ -1,6 +1,6 @@
 test:
-	pip install TwistedWebsocket
-	
+	python -m unittest tests.test_frame
+
 
 clean:
 	rm -rf build dist
