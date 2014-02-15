@@ -2,9 +2,6 @@ import os
 from setuptools import setup
 from distutils.cmd import Command
 
-def read(fname):
-  return open(fname).read()
-
 class TestCommand(Command):
   user_options = []
 
@@ -20,7 +17,7 @@ class TestCommand(Command):
 
 setup(
   name = "TwistedWebsocket",
-  version = "0.0.5.2",
+  version = "0.0.5.3",
   author = "Yoann Cerda",
   maintainer = "Yoann Cerda",
   author_email = "tuxlinuxien@gmail.com",
@@ -30,7 +27,7 @@ setup(
   url = "https://github.com/tuxlinuxien/TwistedWebsocket",
   packages=['TwistedWebsocket'],
   install_requires = ['twisted'],
-  long_description=read('README.md'),
+  long_description=open('README.txt').read(),
   test_suite='tests',
   classifiers=[
       "Development Status :: 2 - Pre-Alpha",
