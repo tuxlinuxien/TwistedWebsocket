@@ -1,4 +1,6 @@
 test:
+	ls .
+	pwd
 	python -m unittest tests.test_frame
 
 clean:
