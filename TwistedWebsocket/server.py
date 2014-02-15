@@ -3,7 +3,7 @@ import re
 import hashlib
 import base64
 from twisted.internet.protocol import Protocol as BaseProtocol
-from exception import FrameError
+from exception import FrameError, ProtocolError
 
 
 handshake = '\
@@ -77,14 +77,13 @@ class Frame(object):
     self.msg = buf
 
   def message(self):
-    self.isReady()
     decoded_msg = ""
     for i in xrange(self.len):
       c = ord(self.msg[i]) ^ ord(self.key[i % 4])
       decoded_msg += str(chr(c))
     return decoded_msg
 
-  def lenght(self):
+  def length(self):
     return self.frame_length
 
   @staticmethod
@@ -125,7 +124,7 @@ class Frame(object):
 
 class Protocol(BaseProtocol, object):
 
-  def __init__(self, users):
+  def __init__(self, users={}):
     self.bufferIn = ""
     self.bufferOut = ""
     self.users = users
@@ -133,20 +132,33 @@ class Protocol(BaseProtocol, object):
     self.users[self.id] = self
     self.websocket_ready = False
 
-  def sendHandcheck(self):
+  def buildHandcheck(self):
     buf = self.bufferIn
     pos = buf.find("\r\n\r\n")
     if pos == -1:
-      return
+      raise ProtocolError("Incomplet Handshake")
     cmd = buf[:pos+5]
     self.bufferIn = buf[pos+4:]
     key = re.search("Sec-WebSocket-Key:\s*(\S+)\s*", cmd)
+    if not key:
+      raise Exception("Missing Key")
     key = key.group(1)
     self.key = key
     key = key+'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
     key = base64.b64encode(hashlib.sha1(key).digest())
-    self.transport.write(handshake % key)
-    self.websocket_ready = True
+    return handshake % key
+
+
+  def sendHandcheck(self):
+    try:
+      hc = self.buildHandcheck()
+    except ProtocolError:
+      pass
+    except Exception:
+        self.transport.abortConnection()
+    else:
+      self.transport.write(hc)
+      self.websocket_ready = True
 
   def dataReceived(self, data):
     self.bufferIn += data
@@ -159,7 +171,7 @@ class Protocol(BaseProtocol, object):
       except FrameError, e:
         pass
       else:
-        f_len = frame.lenght()
+        f_len = frame.length()
         self.bufferIn = self.bufferIn[f_len:]
         self.onMessage(frame.message())
 
