@@ -3,20 +3,28 @@
 import unittest
 from TwistedWebsocket.server import Frame, FrameError, Protocol, ProtocolError
 
-
 def client_frame_builder(times, encrypt=True):
   frame_buf = ""
   o = 1 << 7
   o += 1
   frame_buf += chr(o)
   if times < 126:
-    frame_buf += chr(times)
+    if encrypt:
+      frame_buf += chr(times + (1 << 7))
+    else:
+      frame_buf += chr(times)
   elif times <= ((1 << 16) - 1):
-    frame_buf += chr(126)
+    if encrypt:
+      frame_buf += chr(126 + (1<<7))
+    else:
+      frame_buf += chr(126)
     frame_buf += chr(times >> 8)
     frame_buf += chr(times & (2**8 - 1))
   elif times <= ((1 << 64) - 1):
-    frame_buf += chr(127)
+    if encrypt:
+      frame_buf += chr(127 + (1<<7))
+    else:
+      frame_buf += chr(127)
     for i in [7,6,5,4,3,2,1,0]:
       o = times >> (8*i)
       frame_buf += chr(o & (2**8 - 1))
@@ -76,16 +84,46 @@ class ServerFrameTest(TestingInit):
     msg = ""
     try:
       frame_data = client_frame_builder(msg_len, encrypt=False)
-      msg = Frame.buildMessage("a"*msg_len)
+      msg = Frame.buildMessage("a"*msg_len, mask=False)
     except Exception, e:
       print e
     finally:
       self.assertEqual(frame_data, msg, "Error decode %s length message" % msg_len)
 
+  def test_Frame_buildMessage(self):
+    self.build_test_Frame_buildMessage(10)
+    self.build_test_Frame_buildMessage(125)
+    self.build_test_Frame_buildMessage(126)
+    self.build_test_Frame_buildMessage((1 << 16) - 1)
+    self.build_test_Frame_buildMessage(1 << 16)
+    self.build_test_Frame_buildMessage(2**8 - 1)
+
   def test_Frame_length(self):
     frame_data = client_frame_builder(100)
     f = Frame(frame_data)
     self.assertEqual(f.length(), len(frame_data))
+
+
+  def build_test_Frame_buildMessage_to_client(self, msg_len):
+    msg = ""
+    try:
+      frame_data = client_frame_builder(msg_len, encrypt=True)
+      msg = Frame.buildMessage("a"*msg_len, mask=True)
+      frame_data = Frame(frame_data)
+      msg = Frame(msg)
+    except Exception, e:
+      print e
+    finally:
+      self.assertEqual(frame_data.message(), msg.message(), "Error decode %s length message" % msg_len)
+
+  def test_Frame_buildMessage_to_client(self):
+    self.build_test_Frame_buildMessage_to_client(10)
+    self.build_test_Frame_buildMessage_to_client(125)
+    self.build_test_Frame_buildMessage_to_client(126)
+    self.build_test_Frame_buildMessage_to_client((1 << 16) - 1)
+    self.build_test_Frame_buildMessage_to_client(1 << 16)
+    self.build_test_Frame_buildMessage_to_client(2**8 - 1)
+
 
 
 class ServerProtocolTest(TestingInit):
