@@ -22,7 +22,17 @@ Testing
 ::
     
     python setup.py test
+
     
+Built-in broadcast server
+-------------------------
+
+A server is already integrated into TwistedWebsocket package. Default listening port is 9999
+
+::
+
+    python -m TwistedWebsocket.server [PORT]
+
 
 API
 ---

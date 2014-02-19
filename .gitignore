@@ -1,3 +1,6 @@
 *.pyc
 *egg-info
 dist
+build
+TwistedWebsocket.egg-info
+

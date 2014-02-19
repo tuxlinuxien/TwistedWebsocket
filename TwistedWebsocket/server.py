@@ -107,3 +107,42 @@ class Protocol(BaseProtocol, object):
 
   def onMessage(self, msg):
     pass
+
+
+if __name__ == "__main__":
+  from twisted.internet.protocol import Factory
+  from twisted.internet import reactor
+  import sys
+
+  class WebSocketHandler(Protocol):
+
+    def onConnect(self):
+      print "\n[CONNEXION] %s connected" % self.id
+      for _id, user in self.users.items():
+        user.sendMessage("%s connected" % self.id)
+        print "\n[FRAME] from %s to %s:\n%s connected" % (self.id, _id, self.id)
+
+    def onDisconnect(self):
+      print "\n[DISCONNEXION] %s connected" % self.id
+      for _id, user in self.users.items():
+        user.sendMessage("%s disconnected" % self.id)
+        print "\n[FRAME] from %s to %s:\n%s disconnected" % (self.id, _id, self.id)
+
+    def onMessage(self, msg):
+      for _id, user in  self.users.items():
+        user.sendMessage(msg)
+        print "\n[FRAME] from %s to %s:\n%s" % (self.id, _id, msg)
+
+  class WebSocketFactory(Factory):
+    
+    def __init__(self):
+      self.users = {}
+    
+    def buildProtocol(self, addr):
+      return WebSocketHandler(self.users)
+  PORT = 9999
+  if len(sys.argv) == 2: PORT = int(sys.argv[1])
+  print "TwistedWebsocket server listen on port %s ..." % PORT
+  reactor.listenTCP(PORT, WebSocketFactory())
+  reactor.run()
+
