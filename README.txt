@@ -1,7 +1,7 @@
 TwistedWebsocket
 ================
 
-Websocket server protocol implementation based on Twisted (Partial implementation of the RFC 6455)
+Websocket server protocol implementation based on Twisted.
 
 Requirements
 ------------
@@ -46,6 +46,7 @@ Frame manager
 
 Server Protocol
 
+-  ``TwistedWebsocket.server.Protocol.onHandshake(header)``: Callback when HTTP-like client header is received
 -  ``TwistedWebsocket.server.Protocol.onConnect()``: Callback when the client is connected
 -  ``TwistedWebsocket.server.Protocol.onDisconnect()``: Callback when the client is disconnected
 -  ``TwistedWebsocket.server.Protocol.onMessage(msg)``: Callback when the client receive a message
@@ -69,21 +70,32 @@ Broadcast server example:
     from twisted.internet.protocol import Factory
     from twisted.internet import reactor
     from TwistedWebsocket.server import Protocol
+    import re
 
 
     class WebSocketHandler(Protocol):
 
+      def onHandshake(self, header):
+        g = re.search('Origin\s*:\s*(\S+)', header)
+        if not g: return
+        print "\n[HANDSHAKE] %s origin : %s" % (self.id, g.group(1))
+
       def onConnect(self):
+        print "\n[CONNEXION] %s connected" % self.id
         for _id, user in self.users.items():
           user.sendMessage("%s connected" % self.id)
+          print "\n[FRAME] from %s to %s:\n%s connected" % (self.id, _id, self.id)
 
       def onDisconnect(self):
+        print "\n[DISCONNEXION] %s disconnected" % self.id
         for _id, user in self.users.items():
           user.sendMessage("%s disconnected" % self.id)
+          print "\n[FRAME] from %s to %s:\n%s disconnected" % (self.id, _id, self.id)
 
       def onMessage(self, msg):
         for _id, user in  self.users.items():
           user.sendMessage(msg)
+          print "\n[FRAME] from %s to %s:\n%s" % (self.id, _id, msg)
 
 
     class WebSocketFactory(Factory):
@@ -102,5 +114,5 @@ Broadcast server example:
 TODO
 ----
 
--  Client protocol implementation
 -  Improve frame building
+-  Add WSS example with self-signed certificates

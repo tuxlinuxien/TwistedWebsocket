@@ -17,7 +17,7 @@ class TestCommand(Command):
 
 setup(
   name = "TwistedWebsocket",
-  version = "0.0.6.1",
+  version = "0.0.6.2",
   author = "Yoann Cerda",
   maintainer = "Yoann Cerda",
   author_email = "tuxlinuxien@gmail.com",

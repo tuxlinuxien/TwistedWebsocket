@@ -34,6 +34,7 @@ class Protocol(BaseProtocol, object):
     pos = buf.find("\r\n\r\n")
     if pos == -1:
       raise ProtocolError("Incomplet Handshake")
+    self.onHandshake(buf)
     cmd = buf[:pos+5]
     self.bufferIn = buf[pos+4:]
     key = re.search("Sec-WebSocket-Key:\s*(\S+)\s*", cmd)
@@ -99,6 +100,9 @@ class Protocol(BaseProtocol, object):
     self.transport.write(self.bufferOut)
     self.bufferOut = ""
 
+  def onHandshake(self, header):
+    pass
+
   def onConnect(self):
     pass
 
@@ -116,6 +120,11 @@ if __name__ == "__main__":
 
   class WebSocketHandler(Protocol):
 
+    def onHandshake(self, header):
+      g = re.search('Origin\s*:\s*(\S+)', header)
+      if not g: return
+      print "\n[HANDSHAKE] %s origin : %s" % (self.id, g.group(1))
+
     def onConnect(self):
       print "\n[CONNEXION] %s connected" % self.id
       for _id, user in self.users.items():
@@ -123,7 +132,7 @@ if __name__ == "__main__":
         print "\n[FRAME] from %s to %s:\n%s connected" % (self.id, _id, self.id)
 
     def onDisconnect(self):
-      print "\n[DISCONNEXION] %s connected" % self.id
+      print "\n[DISCONNEXION] %s disconnected" % self.id
       for _id, user in self.users.items():
         user.sendMessage("%s disconnected" % self.id)
         print "\n[FRAME] from %s to %s:\n%s disconnected" % (self.id, _id, self.id)
