@@ -111,6 +111,37 @@ Broadcast server example:
     reactor.run()
 
 
+WSS support:
+------------
+
+::
+
+    from twisted.internet.protocol import Factory
+    from twisted.internet import reactor, ssl
+    from TwistedWebsocket.server import Protocol
+    import re
+
+    class WebSocketHandler(Protocol):
+      ...
+
+    class WebSocketFactory(Factory):
+      ...
+
+    with open("./keys/ssl.localhost.key") as keyFile:
+        with open("./keys/ssl.localhost.cert") as certFile:
+          cert = ssl.PrivateCertificate.loadPEM(keyFile.read() + certFile.read())
+
+    reactor.listenSSL(PORT, WebSocketFactory(), cert.options())
+    reactor.run()
+
+
+Generate self-signed SSL certificates:
+
+::
+
+    $> openssl genrsa -out ./keys/ssl.localhost.key 2048
+    $> openssl req -new -x509 -key ./keys/ssl.localhost.key -out ./keys/ssl.localhost.cert -days 3650 -subj /CN=ssl.localhost
+
 TODO
 ----
 
