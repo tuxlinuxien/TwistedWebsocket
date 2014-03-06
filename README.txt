@@ -111,7 +111,7 @@ Broadcast server example:
     reactor.run()
 
 
-WSS support:
+WSS support
 ------------
 
 ::
