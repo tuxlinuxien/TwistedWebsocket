@@ -1,6 +1,7 @@
 import os
 from setuptools import setup
 from distutils.cmd import Command
+import TwistedWebsocket.server
 
 class TestCommand(Command):
   user_options = []
@@ -17,11 +18,11 @@ class TestCommand(Command):
 
 setup(
   name = "TwistedWebsocket",
-  version = "0.0.7",
+  version = TwistedWebsocket.server.__VERSION__,
   author = "Yoann Cerda",
   maintainer = "Yoann Cerda",
   author_email = "tuxlinuxien@gmail.com",
-  description = ("Websocket server implementation based on Twisted with SSL support."),
+  description = (TwistedWebsocket.server.__DESCRIPTION__),
   license = "MIT",
   keywords = "websocket server twisted ssl",
   url = "https://github.com/tuxlinuxien/TwistedWebsocket",

@@ -10,6 +10,13 @@ from frame import Frame
 import random
 
 
+#
+# Package info
+#
+__VERSION__ = "0.0.7"
+__DESCRIPTION__ = "Websocket server implementation based on Twisted with SSL support."
+
+
 handshake = '\
 HTTP/1.1 101 Web Socket Protocol Handshake\r\n\
 Upgrade: WebSocket\r\n\
@@ -153,15 +160,20 @@ if __name__ == "__main__":
       return WebSocketHandler(self.users)
 
   parser = argparse.ArgumentParser(
-      description="Websocket server implementation based on Twisted with SSL support.", 
+      description=__DESCRIPTION__,
       prog='python -m TwistedWebsocket.server'
     )
   parser.add_argument("-p","--port", help="Change listening port (default 9999).", type=int, default=9999)
   parser.add_argument("-ssl", help="Activate SSL.", action="store_true")
-  parser.add_argument("-key", help="Path to your *.key file.")
-  parser.add_argument("-cert", help="Path to yout *.crt file.")
+  parser.add_argument("-key", help="Path to your *.key file")
+  parser.add_argument("-cert", help="Path to yout *.crt file")
+  parser.add_argument("-v","--version", help="Show the package version and exit", action="store_true")
   options = parser.parse_args(sys.argv[1:]) 
   
+  if options.version:
+    print __VERSION__
+    exit(0)
+
   if options.ssl == False:
     reactor.listenTCP(options.port, WebSocketFactory())
     print "TwistedWebsocket listening on port %s ..." % options.port

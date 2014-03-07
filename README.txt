@@ -75,6 +75,10 @@ Exceptions
 -  ``TwistedWebsocket.exception.FrameError``
 -  ``TwistedWebsocket.exception.ProtocolError``
 
+Package information
+
+-  ``TwistedWebsocket.server.__VERSION__``
+
 
 Default Implementation
 ----------------------
