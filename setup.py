@@ -17,13 +17,13 @@ class TestCommand(Command):
 
 setup(
   name = "TwistedWebsocket",
-  version = "0.0.6.2",
+  version = "0.0.7",
   author = "Yoann Cerda",
   maintainer = "Yoann Cerda",
   author_email = "tuxlinuxien@gmail.com",
-  description = ("Websocket protocol implementation based on Twisted"),
+  description = ("Websocket server implementation based on Twisted with SSL support."),
   license = "MIT",
-  keywords = "websocket server twisted",
+  keywords = "websocket server twisted ssl",
   url = "https://github.com/tuxlinuxien/TwistedWebsocket",
   packages=['TwistedWebsocket'],
   install_requires = ['twisted'],

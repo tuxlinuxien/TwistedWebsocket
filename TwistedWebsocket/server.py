@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import uuid
 import re
 import hashlib
@@ -45,7 +47,6 @@ class Protocol(BaseProtocol, object):
     key = key+'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
     key = base64.b64encode(hashlib.sha1(key).digest())
     return handshake % key
-
 
   def sendHandcheck(self):
     try:
@@ -115,8 +116,9 @@ class Protocol(BaseProtocol, object):
 
 if __name__ == "__main__":
   from twisted.internet.protocol import Factory
-  from twisted.internet import reactor
+  from twisted.internet import reactor, ssl
   import sys
+  import argparse
 
   class WebSocketHandler(Protocol):
 
@@ -149,9 +151,25 @@ if __name__ == "__main__":
     
     def buildProtocol(self, addr):
       return WebSocketHandler(self.users)
-  PORT = 9999
-  if len(sys.argv) == 2: PORT = int(sys.argv[1])
-  print "TwistedWebsocket server listen on port %s ..." % PORT
-  reactor.listenTCP(PORT, WebSocketFactory())
-  reactor.run()
 
+  parser = argparse.ArgumentParser(description="Websocket server protocol implementation based on Twisted.")
+  parser.add_argument("-p","--port", help="Change listening port (default 9999).", type=int, default=9999)
+  parser.add_argument("-ssl", help="Activate SSL.", action="store_true")
+  parser.add_argument("-key", help="Path to your *.key file.")
+  parser.add_argument("-cert", help="Path to yout *.crt file.")
+  options = parser.parse_args(sys.argv[1:]) 
+  
+  if options.ssl == False:
+    reactor.listenTCP(options.port, WebSocketFactory())
+    print "TwistedWebsocket listening on port %s ..." % options.port
+  else:
+    if not options.key or not options.cert:
+      parser.print_help()
+      exit(-1) 
+    with open(options.key) as keyFile:
+      with open(options.cert) as certFile:
+        cert = ssl.PrivateCertificate.loadPEM(keyFile.read() + certFile.read())
+    reactor.listenSSL(options.port, WebSocketFactory(), cert.options())
+    print "TwistedWebsocket listening on port %s with SSL ..." % options.port
+
+  reactor.run()
