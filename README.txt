@@ -101,13 +101,13 @@ Broadcast server example:
         print "\n[HANDSHAKE] %s origin : %s" % (self.id, g.group(1))
 
       def onConnect(self):
-        print "\n[CONNEXION] %s connected" % self.id
+        print "\n[CONNECTION] %s connected" % self.id
         for _id, user in self.users.items():
           user.sendMessage("%s connected" % self.id)
           print "\n[FRAME] from %s to %s:\n%s connected" % (self.id, _id, self.id)
 
       def onDisconnect(self):
-        print "\n[DISCONNEXION] %s disconnected" % self.id
+        print "\n[DISCONNECTION] %s disconnected" % self.id
         for _id, user in self.users.items():
           user.sendMessage("%s disconnected" % self.id)
           print "\n[FRAME] from %s to %s:\n%s disconnected" % (self.id, _id, self.id)
