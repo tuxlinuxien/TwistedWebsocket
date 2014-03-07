@@ -1,7 +1,7 @@
 TwistedWebsocket
 ================
 
-Websocket server protocol implementation based on Twisted with SSL supporl.
+Websocket server implementation based on Twisted with SSL support.
 
 Requirements
 ------------
@@ -27,8 +27,7 @@ Testing
 Built-in broadcast server
 -------------------------
 
-A server is already integrated into TwistedWebsocket package. Default listening port is 9999.
-
+A server is already integrated into TwistedWebsocket package.
 ::
 
     python -m TwistedWebsocket.server
@@ -38,9 +37,9 @@ Advanced options
 
 ::
 
-    usage: server.py [-h] [-p PORT] [-ssl] [-key KEY] [-cert CERT]
+    usage: python -m TwistedWebsocket.server [-h] [-p PORT] [-ssl] [-key KEY] [-cert CERT]
 
-    Websocket server protocol implementation based on Twisted.
+    Websocket server implementation based on Twisted with SSL support.
 
     optional arguments:
       -h, --help            show this help message and exit

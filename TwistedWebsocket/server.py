@@ -152,7 +152,10 @@ if __name__ == "__main__":
     def buildProtocol(self, addr):
       return WebSocketHandler(self.users)
 
-  parser = argparse.ArgumentParser(description="Websocket server protocol implementation based on Twisted.")
+  parser = argparse.ArgumentParser(
+      description="Websocket server implementation based on Twisted with SSL support.", 
+      prog='python -m TwistedWebsocket.server'
+    )
   parser.add_argument("-p","--port", help="Change listening port (default 9999).", type=int, default=9999)
   parser.add_argument("-ssl", help="Activate SSL.", action="store_true")
   parser.add_argument("-key", help="Path to your *.key file.")
