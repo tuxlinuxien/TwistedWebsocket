@@ -4,3 +4,4 @@ test:
 
 clean:
 	rm -rf build dist
+	rm `find . | grep pyc`
